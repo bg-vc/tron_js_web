@@ -12,6 +12,7 @@ class _TronWebState extends State<TronWeb> {
   bool tronFlag = false;
   String account = '';
   String balance = '';
+  String tokenBalance = '';
 
   @override
   Widget build(BuildContext context) {
@@ -26,6 +27,10 @@ class _TronWebState extends State<TronWeb> {
           _balanceWidget(context),
           SizedBox(height: 10),
           _sendTrxWidget(context),
+          SizedBox(height: 10),
+          _contractBalanceOfWidget(context),
+          SizedBox(height: 10),
+          _contractTransferWidget(context),
         ],
       ),
     );
@@ -86,7 +91,8 @@ class _TronWebState extends State<TronWeb> {
             ),
             SizedBox(width: 10),
             Text(
-              '$account',
+              //'$account',
+              '#########################',
               style: GoogleFonts.lato(
                 fontSize: 30,
               ),
@@ -164,4 +170,77 @@ class _TronWebState extends State<TronWeb> {
       ),
     );
   }
+
+  Widget _contractBalanceOfWidget(BuildContext context) {
+    return InkWell(
+      onTap: () {
+        js.context['setTokenBalance']=setTokenBalance;
+        if (account != null && account.trim() != '') {
+          js.context.callMethod('contractBalanceOf', [account]);
+        }
+      },
+      child: Container(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text(
+              'ContractBalanceOfToken: ',
+              style: GoogleFonts.lato(
+                fontSize: 30,
+              ),
+            ),
+            SizedBox(width: 10),
+            Text(
+              '$tokenBalance Token',
+              style: GoogleFonts.lato(
+                fontSize: 30,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void setTokenBalance(value) {
+    print('setTokenBalance value:' + value.toString());
+    setState(() {
+      tokenBalance = (Decimal.tryParse(value?.toString())/Decimal.fromInt(10).pow(6)).toString();
+    });
+  }
+
+  Widget _contractTransferWidget(BuildContext context) {
+    return InkWell(
+      onTap: () {
+        js.context['reloadContractBalanceOf']=reloadContractBalanceOf;
+        if (account != null && account.trim() != '') {
+          js.context.callMethod('contractTransfer', [
+            'TTCT6rgLXGnoJwBuMrVqXjRyyAFgdtgHro',
+            2*1e6,
+          ]);
+        }
+      },
+      child: Container(
+        child: Chip(
+          padding: EdgeInsets.only(left: 15, top: 15, bottom: 15, right: 15),
+          backgroundColor: Colors.blue[500],
+          label: Text(
+            'ContractTransferOfToken',
+            style: GoogleFonts.lato(
+              fontSize: 25,
+              color: Colors.white,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  void reloadContractBalanceOf() {
+    print('reloadContractBalanceOf');
+    if (account != null && account.trim() != '') {
+      js.context.callMethod('contractBalanceOf', [account]);
+    }
+  }
+
 }
