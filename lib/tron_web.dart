@@ -25,6 +25,7 @@ class _TronWebState extends State<TronWeb> {
           SizedBox(height: 10),
           _balanceWidget(context),
           SizedBox(height: 10),
+          _sendTrxWidget(context),
         ],
       ),
     );
@@ -137,5 +138,30 @@ class _TronWebState extends State<TronWeb> {
       }
       setState(() {});
     });
+  }
+
+  Widget _sendTrxWidget(BuildContext context) {
+    return InkWell(
+      onTap: () {
+        if (account != null && account.trim() != '') {
+          js.context.callMethod('sendTrx', [
+            'TTCT6rgLXGnoJwBuMrVqXjRyyAFgdtgHro',
+            3000000]);
+        }
+      },
+      child: Container(
+        child: Chip(
+          padding: EdgeInsets.only(left: 15, top: 15, bottom: 15, right: 15),
+          backgroundColor: Colors.blue[500],
+          label: Text(
+            'SendTRX',
+            style: GoogleFonts.lato(
+              fontSize: 25,
+              color: Colors.white,
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }

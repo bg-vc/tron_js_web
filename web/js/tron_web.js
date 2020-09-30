@@ -4,26 +4,19 @@ function helloWord(value) {
 }
 
 function getTrxBalance(account) {
-    console.log("getTrxBalance account:" + account);
+    console.log("getTrxBalance account: " + account);
     tronWeb.trx.getBalance(account).then(result => {
-    console.log("getTrxBalance result:" + result);
+    console.log("getTrxBalance result: " + result);
     setTrxBalance(result);
     });
 }
 
-function sendTransaction(fromAccount, toAccount, amount) {
-    console.log("sendTransaction fromAccount:" + fromAccount);
-    console.log("sendTransaction toAccount:" + toAccount);
-    console.log("sendTransaction amount:" + amount);
-    var message = {from: fromAccount, to:toAccount, value: web3.toWei(amount, 'ether')};
-    console.log("sendTransaction message:" + message.toString());
-    web3.eth.sendTransaction(message, (err, res) => {
-        if (err != null && !err) {
-            console.log("sendTransaction error:" + err);
-        } else {
-            console.log("sendTransaction res:" + res);
-        }
-    })
+function sendTrx(toAccount, amount) {
+    console.log("sendTrx toAccount: " + toAccount);
+    console.log("sendTrx amount: " + amount);
+    tronWeb.trx.sendTransaction(toAccount, amount).then(result => {
+        console.log("sendTrx result: " + JSON.stringify(result));
+        });
 }
 
 
